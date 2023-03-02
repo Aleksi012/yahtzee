@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, View, Text, TextInput } from "react-native";
-import {AsyncStorage} from 'react-native';
+// import {AsyncStorage} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function HomeScreen({ navigation }) {
@@ -38,8 +39,13 @@ export default function HomeScreen({ navigation }) {
       />
       <Button
         title="OK"
-        onPress={() => navigation.navigate("Gameboard", {firstname: firstname}, storeData(firstname))}
+        onPress={() => (storeData(firstname), navigation.navigate("Gameboard"))}
       />
     </View>
   );
 }
+
+// <Button
+//title="OK"
+//onPress={() => navigation.navigate("Gameboard", {firstname: firstname}, storeData(firstname))}
+///>

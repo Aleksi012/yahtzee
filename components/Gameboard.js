@@ -73,7 +73,7 @@ export default Gameboard = ({ route }) => {
   }
 
   useEffect(() => {
-    getData();
+    
     checkWinner();
     if (nbrOfThrowsLeft === NBR_OF_THROWS) {
       setStatus('Game has not started');
@@ -138,7 +138,6 @@ export default Gameboard = ({ route }) => {
         let randomNumber = Math.floor(Math.random() * 6 + 1);
         board[i] = 'dice-' + randomNumber;
        // spots[i] = randomNumber;
-        
       }
     }
     setNbrOfThrowsLeft(nbrOfThrowsLeft-1);
