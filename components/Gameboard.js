@@ -73,7 +73,8 @@ export default Gameboard = ({ route }) => {
   }
 
   useEffect(() => {
-    
+
+    getData();
     checkWinner();
     if (nbrOfThrowsLeft === NBR_OF_THROWS) {
       setStatus('Game has not started');
@@ -91,7 +92,6 @@ export default Gameboard = ({ route }) => {
       return selectedDices[i] ? "black" : "steelblue";
     }
   }
-
 
   const getData = async () => {
     try {
