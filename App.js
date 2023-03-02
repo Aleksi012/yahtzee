@@ -1,20 +1,21 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import { View } from "react-native";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+import Gameboard from "./components/Gameboard";
+import Scoreboard from "./components/Scoreboard";
+import HomeScreen from "./components/Home";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const Tab = createBottomTabNavigator();
+
+  export default function Navigation() {
+    return (
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Tab.Screen name={'Home'} component={HomeScreen} />
+          <Tab.Screen name={'Gameboard'} component={Gameboard}  />
+          <Tab.Screen name={'Scoreboard'} component={Scoreboard}  />
+        </Tab.Navigator>
+      </NavigationContainer>
+    );
+  }

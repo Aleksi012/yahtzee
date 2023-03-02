@@ -1,0 +1,54 @@
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import { View } from "react-native";
+
+const Tab = createBottomTabNavigator();
+
+  const HOME = 'Home'
+  const GAMEBOARD = 'Gameboard'
+  const SCOREBOARD = 'Scoreboard'
+
+  const icons = {
+    [HOME]: 'home',
+    [GAMEBOARD]: 'gameboard',
+    [SCOREBOARD]: 'scoreboard'
+  }
+
+  export default function BottomNav() {
+
+    const HomeScreen = () => <View style={{backgroundColor: '#dab304', flex:1}}></View>
+    const GameboardScreen= () => <View style={{backgroundColor: '#5bd35f', flex:1}}></View>
+    const ScoreboardScreen = () => <View style={{backgroundColor: '#08cee8', flex:1}}></View>
+
+    return (
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Tab.Screen name={HOME} component={HomeScreen} />
+          <Tab.Screen name={GAMEBOARD} component={GameboardScreen}  />
+          <Tab.Screen name={SCOREBOARD} component={ScoreboardScreen}  />
+        </Tab.Navigator>
+      </NavigationContainer>
+    );
+  }
+
+
+
+
+
+  const HomeScreen1 = () => {
+    return (
+        <HomeScreen />
+    )
+}
+
+const GameboardScreen1 = () => {
+    return (
+        <Gameboard />
+    )
+}
+
+const ScoreboardScreen1 = () => {
+    return (
+        <Scoreboard />
+    )
+}

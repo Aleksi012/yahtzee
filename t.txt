@@ -1,0 +1,3 @@
+<Tab.Screen name={HOME} component={HomeScreen} options={{tabBarIcon: ()=> <AntDesign name={icons[HOME]} size={20} /> }} />
+<Tab.Screen name={GAMEBOARD} component={GameboardScreen} options={{tabBarIcon: ()=> <AntDesign name={icons[HOME]} size={20} /> }} />
+<Tab.Screen name={SCOREBOARD} component={ScoreboardScreen} options={{tabBarIcon: ()=> <AntDesign name={icons[HOME]} size={20} /> }} />
