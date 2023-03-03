@@ -11,7 +11,6 @@ let board = [];
 
 export default Gameboard = ({ route }) => {
 
-  const [playerName, setPlayerName] = useState('');
   const [nbrOfThrowsLeft, setNbrOfThrowsLeft] = useState(NBR_OF_THROWS);
   const [status, setStatus] = useState('');
   const [firstname, setFirstname] = useState('');
@@ -21,9 +20,9 @@ export default Gameboard = ({ route }) => {
   const [selectedDices, setSelectedDices] = 
     useState(new Array(NBR_OF_DICES).fill(false));
 
-  const [diceSpots, setDiceSpots] = useState(new Array(NBR_OF_DICES).fill(0));
+  const [diceSpots, setDiceSpots] = useState(new Array(NBR_OF_DICES).fill(spots));
 
-  const [dicePointsTotal, setDicePointsTotal] = useState(new Array(MAX_SPOT).fill(0));
+  const [dicePointsTotal, setDicePointsTotal] = useState(new Array(MAX_SPOT).fill(spots.sum));
 
   const [selectedDicePoints, setSelectedDicePoints] = 
     useState(new Array(MAX_SPOT).fill(false));
@@ -51,7 +50,7 @@ export default Gameboard = ({ route }) => {
   for ( let spot = 0; spot < MAX_SPOT; spot++ ) {
     pointsRow.push(
       <Col key={"points" + spot}>
-        <Text key={"points" + spot} style={styles.points}>{getSpotTotal(spots)}</Text>
+        <Text key={"points" + spot} style={styles.points}>{spot}</Text>
       </Col>
     )
   }
@@ -179,8 +178,6 @@ export default Gameboard = ({ route }) => {
       setStatus('Keep on throwing');
     }
   }
-
-
 
   const getScoreboardData = async () => {
     try {

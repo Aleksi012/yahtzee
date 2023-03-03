@@ -22,13 +22,12 @@ export default function HomeScreen({ navigation }) {
 
   const storeData = async (value) => {
     try {
-      console.log(value);
-      await AsyncStorage.setItem('@firstname', value)
+      await AsyncStorage.setItem('firstname', value)
     } catch (e) {
       // saving error
     }
   }
-
+  }
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>Home Screen</Text>
@@ -39,7 +38,7 @@ export default function HomeScreen({ navigation }) {
       />
       <Button
         title="OK"
-        onPress={() => (storeData(firstname), navigation.navigate("Gameboard"))}
+        onPress={() => (storeData(), navigation.navigate("Gameboard"))}
       />
     </View>
   );
