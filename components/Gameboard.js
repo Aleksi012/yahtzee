@@ -15,6 +15,8 @@ export default Gameboard = ({ route }) => {
   const [nbrOfThrowsLeft, setNbrOfThrowsLeft] = useState(NBR_OF_THROWS);
   const [status, setStatus] = useState('');
   const [firstname, setFirstname] = useState('');
+  const [spots, setSpots] = useState([])
+
 
   const [selectedDices, setSelectedDices] = 
     useState(new Array(NBR_OF_DICES).fill(false));
@@ -49,26 +51,26 @@ export default Gameboard = ({ route }) => {
   for ( let spot = 0; spot < MAX_SPOT; spot++ ) {
     pointsRow.push(
       <Col key={"points" + spot}>
-        <Text key={"points" + spot} style={styles.points}>{getSpotTotal(spot)}</Text>
+        <Text key={"points" + spot} style={styles.points}>{getSpotTotal(spots)}</Text>
       </Col>
     )
   }
 
-  const buttonRow = [];
-
-  for ( let diceButton = 0; diceButton < MAX_SPOT; diceButton++ ) {
-    buttonRow.push(
-        <Col key={"buttonsRow" + diceButton}>
-            <Pressable
-            key={"buttonsRow" + diceButton}>
-                <MaterialCommunityIcons
-                name={"numeric-" + (diceButton + 1) + "-circle"}
-                key={"buttonsRow" + diceButton}
-                size={40}
-                color={"steelblue"}
-                ></MaterialCommunityIcons>
+  const buttonsRow = [];
+  for (let diceButton = 0; diceButton < MAX_SPOT; diceButton++) {
+    buttonsRow.push(
+      <Col key={"buttonsRow" + diceButton}>
+        <Pressable
+          onPress={()=> selectDicePoints(diceButton)}
+          key={"buttonsRow" + diceButton}>
+            <MaterialCommunityIcons
+            name={'numeric-' + (diceButton + 1) + "-circle"}
+            key={"buttonsRow" + diceButton}
+            size={40}
+           // color={getDicePointsColor(diceButton)}
+            ></MaterialCommunityIcons>
             </Pressable>
-        </Col>
+      </Col>
     )
   }
 
@@ -83,6 +85,20 @@ export default Gameboard = ({ route }) => {
       setNbrOfThrowsLeft(NBR_OF_THROWS-1);
     }
   }, [nbrOfThrowsLeft]);
+
+  useEffect(() => {
+    if (nbrOfThrowsLeft === 0) {
+      setStatus('Select your points')
+    }
+    else if (nbrOfThrowsLeft < 0) {
+      setNbrOfThrowsLeft(NBR_OF_THROWS-1)
+    }
+    else if (selectedDicePoints.every(x=>x)) {
+      savePlayerPoints()
+    }
+
+  },[nbrOfThrowsLeft])
+
 
   function getDiceColor(i) {
     if (board.every((val, i, arr) => val === arr[0])) {
@@ -116,32 +132,34 @@ export default Gameboard = ({ route }) => {
   }
 
   function selectDicePoints(i) {
+    
     let selected = [...selectedDices];
-    let selectedPoints = [...selectDicePoints]
+    let selectedPoints = [...selectedDicePoints]
+    console.log(selectedPoints)
     let points = [...dicePointsTotal]
-    if (!selectedPoints(i)) {
-      selectedPoints[i] = true;
-      let nbrOfDices = diceSpots.reduce((total, x) => (x === (i + 1) ? total + 1: total), 0)
-      points[i] = nbrOfDices * (i + 1)
-      setDicePointsTotal(points)
+    if (!selectedPoints[i]) {
+    selectedPoints[i] = true;
+    let nbrOfDices = diceSpots.reduce((total, x) => (x === (i + 1) ? total + 1: total), 0)
+    points[i] = nbrOfDices * (i + 1)
+    setDicePointsTotal(points)
     }
     selected.fill(false)
     setSelectedDices(selected)
-    selectDicePoints(selectedPoints)
+    setSelectedDicePoints(selectedPoints)
     setNbrOfThrowsLeft(NBR_OF_THROWS)
     return points[i]
   }
 
   function throwDices() {
     for (let i = 0; i < NBR_OF_DICES; i++) {
-      if (!selectDice[i]) {
+      if (!selectDicePoints[i]) {
         let randomNumber = Math.floor(Math.random() * 6 + 1);
         board[i] = 'dice-' + randomNumber;
-       // spots[i] = randomNumber;
+        spots[i] = randomNumber;
       }
     }
     setNbrOfThrowsLeft(nbrOfThrowsLeft-1);
-    // setDiceSpots(spots)
+    setDiceSpots(spots);
     // setStatusBarBackgroundColor('Select and throw dices again')
   }
 
@@ -162,8 +180,37 @@ export default Gameboard = ({ route }) => {
     }
   }
 
-  
 
+
+  const getScoreboardData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(SCOREBOARD_KEY)
+      if (jsonValue !== null){
+        let tmpScores = JSON.parse(jsonValue);
+        setScores(tmpScores);
+      }
+    }
+    catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  const savePlayerPoints = async () => {
+    const playerPoints = {
+      name: playerName,
+      date: '3.3.2023',
+      time: '09.00',
+      points: 60
+    }
+    try {
+      const newScore = [...ScrollViewBase, playerPoints];
+      const jsonValue = JSON.stringify(newScore)
+      await AsyncStorage.setItem(SCOREBOARD_KEY, jsonValue)
+    }
+    catch (error) {
+      console.log("Save error: " + error.message)
+    }
+  }
 
   return (
     <View style={styles.gameboard}>
@@ -176,9 +223,9 @@ export default Gameboard = ({ route }) => {
             Throw dices
           </Text>
       </Pressable>
-      <Text style={styles.gameinfo}>Total: {} </Text>
+      <Text style={styles.gameinfo}>Total: {dicePointsTotal} </Text>
       <View style={styles.dicePoints}><Grid>{pointsRow}</Grid></View>
-      <View style={styles.dicePoints}><Grid>{buttonRow}</Grid></View>
+      <View style={styles.dicePoints}><Grid>{buttonsRow}</Grid></View>
       <Text>Player: {firstname} </Text>
     </View>
   )
