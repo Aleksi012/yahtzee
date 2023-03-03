@@ -1,45 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { Button, View, Text, TextInput } from "react-native";
-// import {AsyncStorage} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button, View, Text, TextInput, ScrollView } from "react-native";
+import Header from "./Header";
+import Footer from "./Footer";
+import { useNavigation } from '@react-navigation/native';
 
+export default function Home({ route }) {
+  const Navigation = useNavigation();
+  const [nickname, setNickname] = useState('');
 
-export default function HomeScreen({ navigation }) {
-  
-  const [firstname, setFirstname] = useState('');
-
-  useEffect(() => {
-    clearData();
-  }, []);
-
-  const clearData = async () => {
-    try {
-      await AsyncStorage.removeItem('@firstname');
-    } catch (e) {
-      // saving error
-    }
-  }
-
-  const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem('firstname', value)
-    } catch (e) {
-      // saving error
-    }
-  }
-  
   return (
+    <ScrollView>
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Home Screen</Text>
+    <Header/>
+
+      <Text>Enter player name</Text>
       <TextInput
-        onChangeText={setFirstname}
-        value={firstname}
-        placeholder="Firstname"
+        onChangeText={setNickname}
+        value={nickname}
+        placeholder="Nickname"
       />
       <Button
-        title="OK"
-        onPress={() => (storeData(), navigation.navigate("Gameboard"))}
+        title="Go to Game"
+        onPress={() => Navigation.navigate(("Instructions"), {nickname: nickname})}
       />
+      <Footer/>
     </View>
+    </ScrollView>
   );
 }
