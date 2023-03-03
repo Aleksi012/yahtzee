@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Pressable } from 'react-native'
-import materialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Text, View, Pressable, Button } from 'react-native'
 import styles from '../style/style';
 import { NBR_OF_DICES, NBR_OF_THROWS, MAX_SPOT, BONUS_POINTS, BONUS_POINTS_LIMIT } from '../constants/Game'
 import { Col, Grid, } from 'react-native-easy-grid';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { setStatusBarBackgroundColor } from 'expo-status-bar';
+import { useRoute } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native';
+
+
 
 let board = [];
 
 export default Gameboard = ({ route }) => {
+  
+Math.floor(dicePointsTotal)
 
   const [nbrOfThrowsLeft, setNbrOfThrowsLeft] = useState(NBR_OF_THROWS);
   const [status, setStatus] = useState('');
   const [firstname, setFirstname] = useState('');
   const [spots, setSpots] = useState([])
-
+  const [playerName, setPlayerName] = useState('')
 
   const [selectedDices, setSelectedDices] = 
     useState(new Array(NBR_OF_DICES).fill(false));
@@ -26,8 +30,7 @@ export default Gameboard = ({ route }) => {
 
   const [selectedDicePoints, setSelectedDicePoints] = 
     useState(new Array(MAX_SPOT).fill(false));
-
-    //
+  
     const row = [];
     for (let i = 0; i < NBR_OF_DICES; i++) {
       row.push(
@@ -73,9 +76,17 @@ export default Gameboard = ({ route }) => {
     )
   }
 
-  useEffect(() => {
 
-    getData();
+  useEffect (() => {
+    if (playerName === "" && route.params?.nickname) {
+      setPlayerName(route.params?.nickname);
+      getScoreboardData();
+      console.log(route.params?.nickname);
+    }
+
+  }, []);
+
+  useEffect(() => {    
     checkWinner();
     if (nbrOfThrowsLeft === NBR_OF_THROWS) {
       setStatus('Game has not started');
@@ -108,18 +119,6 @@ export default Gameboard = ({ route }) => {
     }
   }
 
-  const getData = async () => {
-    try {
-      const firstname = await AsyncStorage.getItem('@firstname');
-      console.log(firstname);
-      if (firstname !== null) {
-        setFirstname(firstname);
-      }
-    } catch(e) {
-      // error reading value
-    }
-  }
-
   function selectDice(i) {
     let dices = [...selectedDices];
     dices[i] = selectedDices[i] ? false : true;
@@ -127,7 +126,7 @@ export default Gameboard = ({ route }) => {
   }
 
   function getSpotTotal(i) {
-    return dicePointsTotal[i]
+    return dicePointsTotal + dicePointsTotal[i]
   }
 
   function selectDicePoints(i) {
@@ -179,19 +178,6 @@ export default Gameboard = ({ route }) => {
     }
   }
 
-  const getScoreboardData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem(SCOREBOARD_KEY)
-      if (jsonValue !== null){
-        let tmpScores = JSON.parse(jsonValue);
-        setScores(tmpScores);
-      }
-    }
-    catch (error) {
-      console.log(error.message);
-    }
-  }
-
   const savePlayerPoints = async () => {
     const playerPoints = {
       name: playerName,
@@ -223,7 +209,7 @@ export default Gameboard = ({ route }) => {
       <Text style={styles.gameinfo}>Total: {dicePointsTotal} </Text>
       <View style={styles.dicePoints}><Grid>{pointsRow}</Grid></View>
       <View style={styles.dicePoints}><Grid>{buttonsRow}</Grid></View>
-      <Text>Player: {firstname} </Text>
+      <Text>Player: {playerName} </Text>
     </View>
   )
 }

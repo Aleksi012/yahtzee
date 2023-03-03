@@ -27,7 +27,7 @@ export default function HomeScreen({ navigation }) {
       // saving error
     }
   }
-  }
+  
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>Home Screen</Text>
@@ -43,8 +43,3 @@ export default function HomeScreen({ navigation }) {
     </View>
   );
 }
-
-// <Button
-//title="OK"
-//onPress={() => navigation.navigate("Gameboard", {firstname: firstname}, storeData(firstname))}
-///>
