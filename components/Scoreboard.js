@@ -1,47 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View } from 'react-native'
-// import header
-// import footer
-import Header from './Header'
-import Footer from './Footer'
+import { useState, useEffect } from "react";
+import {Text, View} from "react-native";
+import Header from "./Header";
+import Footer from "./Footer";
+import { NBR_OF_DICES, NBR_OF_THROWS, MAX_SPOT, MIN_SPOT } from '../constants/Game';
+import { useNavigation } from '@react-navigation/native';
+import { SCOREBOARD_KEY } from "../constants/Game";
+import savePlayerPoints from "./Gameboard";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { NBR_OF_DICES, NBR_OF_THROWS, MAX_SPOT, BONUS_POINTS, BONUS_POINTS_LIMIT } from '../constants/Game'
 
+export default Scoreboard = ( {navigation} ) => {
 
-export default Scoreboard = ({ navigation }) => {
+    const Navigation = useNavigation();
+    const [scores, setScores] = useState([]);
 
-  const [scores, setScores] = useState([]);
+    useEffect(() => {
+      const unsubscribe = Navigation.addListener("focus", () => {
+          getScoreboardData();
+      }); 
+      return unsubscribe;
+  }, []);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('Focus', () => {
-      getScoreboardData()
-    })
-    return unsubscribe
-  }, [navigation])
+    const getScoreboardData = async () => {
+      try {
+          const jsonValue = await AsyncStorage.getItem(SCOREBOARD_KEY);
 
-
-  const getScoreboardData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem(SCOREBOARD_KEY)
-      if (jsonValue !== null){
-        let tmpScores = JSON.parse(jsonValue);
-        setScores(tmpScores);
+          console.log(jsonValue)
+          if (jsonValue !== null) {
+              let tmpScores = JSON.parse(jsonValue);
+              setScores(tmpScores);
+              scores.sort((a, b) => parseFloat(a.scores) - parseFloat(b.scores));
+          }
       }
-    }
-    catch (error) {
-      console.log('Read error: ' + error.message);
-    }
+      catch (error) {
+          console.log('Read error: ' + error.message);
+      }
   }
 
   return (
     <View>
-        <Header />
+        <Header/>
         <View>
             {scores.map((player, i) => (
-                <Text key={i}>{i + 1}. {player.name} {player.date} {player.time} {player.points} </Text>
+                <Text key={i}>{i + 1}. {player.name} {player.date} {player.time} {player.points}</Text>
             ))}
         </View>
-        <Footer />
+        <Footer/>
     </View>
-  )
+)
+
 }
